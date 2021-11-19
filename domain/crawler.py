@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 BASE_URL = "https://github.com"
 
 
-def get_box(prev_url, url):
-    response = requests.get(url)
+def get_box(prev_url, url, tree):
+    response = requests.get(BASE_URL + url)
 
     if response.status_code != 200:
         print(response.status_code)
@@ -19,12 +20,21 @@ def get_box(prev_url, url):
             if a is None:
                 continue
             ref = a["href"]
-            if prev_url != BASE_URL + ref and not ref.endswith('.md'):
+            if prev_url != ref and not ref.endswith('.md'):
                 print(ref)
-                get_box(url, BASE_URL + ref)
-            elif ref.endswith('.md'):
+                tree[prev_url].append({ref: []})
+                get_box(url, ref, tree)
+            elif url != start_url and ref.endswith('.md'):
+                tree[start_url][-1][url].append(ref)
                 print(ref)
 
 
-url = 'https://github.com/SHSongs/fast-paper'
-get_box(url, url)
+start_url = '/SHSongs/fast-paper'
+tree = {start_url: []}
+get_box(start_url, start_url, tree)
+print(tree)
+
+print("\n\n")
+
+j = json.dumps(tree, indent=4, sort_keys=True)
+print(j)
