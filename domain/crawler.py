@@ -18,9 +18,12 @@ def get_box(prev_url, url):
             a = i.find("a")
             if a is None:
                 continue
-            print(a["href"])
-            if prev_url != BASE_URL + a["href"] and not a["href"].endswith('.md'):
-                get_box(url, BASE_URL + a["href"])
+            ref = a["href"]
+            if prev_url != BASE_URL + ref and not ref.endswith('.md'):
+                print(ref)
+                get_box(url, BASE_URL + ref)
+            elif ref.endswith('.md'):
+                print(ref)
 
 
 url = 'https://github.com/SHSongs/fast-paper'
