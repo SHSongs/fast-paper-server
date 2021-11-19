@@ -50,3 +50,31 @@ j = json.dumps(tree, indent=4, sort_keys=True)
 print(j)
 
 
+def get_table(url):
+    response = requests.get(BASE_URL + url)
+
+    if response.status_code != 200:
+        print(response.status_code)
+    else:
+        html = response.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        try:
+            tag_table = soup.find("table")
+            print(tag_table.find("thead").find("tr").find("th").text)
+            print(tag_table.find("tbody").findAll("tr"))
+        except:
+            print("tag 없음")
+        finally:
+            print("\n")
+
+
+def dfs(node):
+    print(node.data)
+    if len(node.children) == 0:
+        get_table(node.data)
+    for i in node.children:
+        dfs(i)
+
+
+dfs(root)
