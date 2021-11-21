@@ -6,7 +6,7 @@ import json
 BASE_URL = "https://github.com"
 
 
-def get_box(prev_url, url, node):
+def make_file_tree(prev_url, url, node):
     response = requests.get(BASE_URL + url)
 
     if response.status_code != 200:
@@ -27,7 +27,7 @@ def get_box(prev_url, url, node):
                 tree[prev_url].append({ref: []})
                 child = Node(ref)
                 node.children.append(child)
-                get_box(url, ref, child)
+                make_file_tree(url, ref, child)
 
             elif url != start_url and ref.endswith('.md'):
                 child = Node(ref)
@@ -35,19 +35,6 @@ def get_box(prev_url, url, node):
 
                 tree[start_url][-1][url].append(ref)
                 print(ref)
-
-
-start_url = '/SHSongs/fast-paper'
-tree = {start_url: []}
-root = Node(start_url)
-
-get_box(start_url, start_url, root)
-print(tree)
-
-print("\n\n")
-
-j = json.dumps(tree, indent=4, sort_keys=True)
-print(j)
 
 
 def get_table(url):
@@ -76,5 +63,17 @@ def dfs(node):
     for i in node.children:
         dfs(i)
 
+
+start_url = '/SHSongs/fast-paper'
+tree = {start_url: []}
+root = Node(start_url)
+
+make_file_tree(start_url, start_url, root)
+print(tree)
+
+print("\n\n")
+
+j = json.dumps(tree, indent=4, sort_keys=True)
+print(j)
 
 dfs(root)
