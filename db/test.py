@@ -21,9 +21,23 @@ def get_db():
         db.close()
 
 
-@app.get("/paper/")
-def read_db(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@app.get("/fast-papers/")
+def read_fast_papers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     data = crud.get_fast_papers(db, skip=skip, limit=limit)
+    print(data)
+    return data
+
+
+@app.get("/tags/")
+def read_tags(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    data = crud.get_tags(db, skip=skip, limit=limit)
+    print(data)
+    return data
+
+
+@app.get("/papers/")
+def read_papers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    data = crud.get_papers(db, skip=skip, limit=limit)
     print(data)
     return data
 
