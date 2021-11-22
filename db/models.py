@@ -8,8 +8,8 @@ class fast_paper(Base):
     __tablename__ = "fast_paper"
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
-    paper_id = Column(Integer, unique=True, nullable=False)
-    tag_id = Column(Integer, nullable=True)
+    paper_id = Column(Integer, ForeignKey("paper.id"))
+    tag_id = Column(Integer, ForeignKey("tag.id"))
 
 
 class paper(Base):

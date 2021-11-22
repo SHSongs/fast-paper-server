@@ -42,4 +42,17 @@ def read_papers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return data
 
 
+@app.get("/refresh/")
+def refresh_data(db: Session = Depends(get_db)):
+    data = crud.refresh_data
+    print(data)
+    return data
+
+
+@app.get("/paper_tags/")
+def paper_tags(db: Session = Depends(get_db)):
+    data = crud.get_paper_tags(db)
+    print(data)
+    return data
+
 uvicorn.run(app, host="0.0.0.0", port=8000)
