@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 import models
 from domain.crawler import get_info
@@ -27,5 +28,6 @@ def refresh_data(db: Session):
 
 
 def get_paper_tags(db: Session):
-    d = db.query(models.fast_paper).join(models.tag, models.fast_paper.tag_id == models.tag.id).all()
+    d = db.query(models.fast_paper.paper_id, models.tag.tag, models.paper.title).join(models.tag, models.fast_paper.tag_id == models.tag.id).\
+        join(models.paper, models.fast_paper.paper_id == models.paper.id).all()
     return d
