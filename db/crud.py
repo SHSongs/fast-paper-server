@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 import models
-from domain.crawler import get_info
+from domain.crawler import get_info, Board
 
 
 def get_fast_papers(db: Session, skip: int = 0, limit: int = 100):
@@ -17,7 +17,18 @@ def get_papers(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_paper_tags(db: Session):
-    d = db.query(models.fast_paper.paper_id, models.tag.tag, models.paper.title).join(models.tag,
-                                                                                      models.fast_paper.tag_id == models.tag.id). \
+    t = db.query(models.fast_paper.paper_id, models.tag.tag, models.paper.title). \
+        join(models.tag, models.fast_paper.tag_id == models.tag.id). \
         join(models.paper, models.fast_paper.paper_id == models.paper.id).all()
-    return d
+    return t
+
+
+def refresh_data(db: Session):
+    boards = get_info()
+    for i in boards:
+        for tag in i.tags:
+            t = models.tag(tag=tag)
+            db.add(t)
+            db.commit()
+
+    return None
