@@ -54,7 +54,7 @@ def get_table(url, boards):
         except:
             print("tag 없음")
 
-        return None
+        return []
 
 
 def dfs(node, boards):

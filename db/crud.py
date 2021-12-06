@@ -26,9 +26,13 @@ def get_paper_tags(db: Session):
 def refresh_data(db: Session):
     boards = get_info()
     for i in boards:
-        for tag in i.tags:
-            t = models.tag(tag=tag)
-            db.add(t)
-            db.commit()
+        tags = i.tags
+        for tag in tags:
 
+            t = models.tag(tag=tag)
+            try:
+                db.add(t)
+                db.commit()
+            except:
+                print("중복 태그")
     return None

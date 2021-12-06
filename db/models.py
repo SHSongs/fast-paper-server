@@ -25,4 +25,4 @@ class tag(Base):
     __tablename__ = "tag"
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
-    tag = Column(Text, nullable=False)
+    tag = Column(Text, nullable=False, unique=True)
