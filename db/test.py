@@ -56,4 +56,11 @@ def paper_tags(db: Session = Depends(get_db)):
     return data
 
 
+@app.get("/remove_all_data/")
+def remove_all_data(db: Session = Depends(get_db)):
+    data = crud.remove_all_data(db)
+    print(data)
+    return data
+
+
 uvicorn.run(app, host="0.0.0.0", port=8000)

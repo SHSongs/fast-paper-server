@@ -36,3 +36,20 @@ def refresh_data(db: Session):
             except:
                 print("중복 태그")
     return None
+
+
+def remove_all_data(db: Session):
+    data = db.query(models.fast_paper).all()
+    for i in data:
+        db.delete(i)
+
+    data = db.query(models.paper).all()
+    for i in data:
+        db.delete(i)
+
+    data = db.query(models.tag).all()
+    for i in data:
+        db.delete(i)
+
+    db.commit()
+    return None
