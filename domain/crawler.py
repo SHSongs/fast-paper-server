@@ -1,3 +1,4 @@
+from typing import List
 import requests
 from bs4 import BeautifulSoup
 from utils.data_structures import Node
@@ -5,7 +6,13 @@ from utils.data_structures import Node
 BASE_URL = "https://github.com"
 
 
-def make_file_tree(prev_url, url, node):
+class Board:
+    def __init__(self, name: str, tags: List[str]):
+        self.name = name
+        self.tags = tags
+
+
+def make_file_tree(prev_url, url, node, start_url):
     response = requests.get(BASE_URL + url)
 
     if response.status_code != 200:
@@ -24,7 +31,7 @@ def make_file_tree(prev_url, url, node):
                 print(ref)
                 child = Node(ref)
                 node.children.append(child)
-                make_file_tree(url, ref, child)
+                make_file_tree(url, ref, child, start_url)
 
             elif url != start_url and ref.endswith('.md'):
                 child = Node(ref)
@@ -32,7 +39,7 @@ def make_file_tree(prev_url, url, node):
                 print(ref)
 
 
-def get_table(url):
+def get_table(url, boards):
     response = requests.get(BASE_URL + url)
 
     if response.status_code != 200:
@@ -47,24 +54,27 @@ def get_table(url):
         except:
             print("tag 없음")
 
-        return None
+        return []
 
 
-def dfs(node):
+def dfs(node, boards):
     if len(node.children) == 0:
-        print(node.data)
-        tag = get_table(node.data)
+        tag = get_table(node.data, boards)
         print(tag)
+        boards.append(Board(node.data, tag))
     for i in node.children:
-        dfs(i)
+        dfs(i, boards)
 
 
-start_url = '/SHSongs/fast-paper'
-root = Node(start_url)
+def get_info() -> List[Board]:
+    start_url = '/SHSongs/fast-paper'
+    root = Node(start_url)
+    make_file_tree(start_url, start_url, root, start_url)
 
-make_file_tree(start_url, start_url, root)
+    boards = []
+    dfs(root, boards)
 
-print("\n\n")
+    return boards
 
 
-dfs(root)
+# b: List[Board] = get_info()
