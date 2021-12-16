@@ -26,6 +26,16 @@ def get_paper_tags(db: Session):
 def refresh_data(db: Session):
     boards = get_info()
     for i in boards:
+        name = i.name
+
+        p = models.paper(title=name, url=name, category="c")
+        try:
+            db.add(p)
+            db.commit()
+        except:
+            db.rollback()
+            print("paper 추가 에러 발생")
+
         tags = i.tags
         for tag in tags:
             t = models.tag(tag=tag)
