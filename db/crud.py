@@ -28,12 +28,12 @@ def refresh_data(db: Session):
     for i in boards:
         tags = i.tags
         for tag in tags:
-
             t = models.tag(tag=tag)
             try:
                 db.add(t)
                 db.commit()
             except:
+                db.rollback()
                 print("중복 태그")
     return None
 
