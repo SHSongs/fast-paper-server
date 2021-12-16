@@ -44,7 +44,17 @@ def refresh_data(db: Session):
                 db.commit()
             except:
                 db.rollback()
+                t = db.query(models.tag).filter(models.tag.tag == t.tag).first()
                 print("중복 태그")
+
+            f_p = models.fast_paper(paper_id=p.id, tag_id=t.id)
+            try:
+                db.add(f_p)
+                db.commit()
+            except:
+                db.rollback()
+                print("paper 추가 에러 발생")
+
     return None
 
 
