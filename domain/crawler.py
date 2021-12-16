@@ -2,6 +2,7 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 from utils.data_structures import Node
+import pickle
 
 BASE_URL = "https://github.com"
 
@@ -66,7 +67,15 @@ def dfs(node, boards):
         dfs(i, boards)
 
 
-def get_info() -> List[Board]:
+def get_info(dummy_data=False) -> List[Board]:
+    if dummy_data:
+        print("더미 데이터를 가져옵니다.")
+        try:
+            with open('boards.pickle', 'rb') as f:
+                return pickle.load(f)
+        except:
+            print("load error 발생, 크롤링을 진행합니다.")
+
     start_url = '/SHSongs/fast-paper'
     root = Node(start_url)
     make_file_tree(start_url, start_url, root, start_url)
@@ -74,7 +83,10 @@ def get_info() -> List[Board]:
     boards = []
     dfs(root, boards)
 
-    return boards
+    # save
+    with open('boards.pickle', 'wb') as f:
+        pickle.dump(boards, f, pickle.HIGHEST_PROTOCOL)
 
+    return boards
 
 # b: List[Board] = get_info()

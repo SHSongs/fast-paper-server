@@ -24,7 +24,7 @@ def get_paper_tags(db: Session):
 
 
 def refresh_data(db: Session):
-    boards = get_info()
+    boards = get_info(dummy_data=True)
     for i in boards:
         name = i.name
 
