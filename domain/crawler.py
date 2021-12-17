@@ -51,7 +51,7 @@ def get_table(url, boards):
 
         try:
             tag_table = soup.find("table")
-            return [i.text for i in tag_table.find("tbody").findAll("tr")]
+            return [i.text.strip('\n') for i in tag_table.find("tbody").findAll("tr")]
         except:
             print("tag 없음")
 
