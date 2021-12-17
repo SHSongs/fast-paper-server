@@ -6,11 +6,16 @@ import pickle
 
 BASE_URL = "https://github.com"
 
+from dataclasses import dataclass, field
+from datetime import date
+from typing import List
 
+
+@dataclass(unsafe_hash=True)
 class Board:
-    def __init__(self, name: str, tags: List[str]):
-        self.name = name
-        self.tags = tags
+    name: str
+    category: str
+    tags: List[str] = field(default_factory=List)
 
 
 def make_file_tree(prev_url, url, node, start_url):
@@ -62,7 +67,7 @@ def dfs(node, boards):
     if len(node.children) == 0:
         tag = get_table(node.data, boards)
         print(tag)
-        boards.append(Board(node.data, tag))
+        boards.append(Board(name=node.data, category="", tags=tag))
     for i in node.children:
         dfs(i, boards)
 
