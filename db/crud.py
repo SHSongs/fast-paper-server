@@ -52,17 +52,13 @@ def refresh_data(db: Session):
 
 
 def remove_all_data(db: Session):
-    data = db.query(models.fast_paper).all()
-    for i in data:
-        db.delete(i)
+    def deleteTable(table):
+        data = db.query(table).all()
+        for i in data:
+            db.delete(i)
+        db.commit()
 
-    data = db.query(models.paper).all()
-    for i in data:
-        db.delete(i)
-
-    data = db.query(models.tag).all()
-    for i in data:
-        db.delete(i)
-
-    db.commit()
+    deleteTable(models.fast_paper)
+    deleteTable(models.paper)
+    deleteTable(models.tag)
     return None
