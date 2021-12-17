@@ -38,8 +38,8 @@ def refresh_data(db: Session):
 
     for board in boards:
         name = board.name
-        p = models.paper(title=name, url=name, category="c")
-        addDB(p, lambda: print("paper 추가 에러 발생"))
+        p = models.paper(title=name.split('/')[-1], url=name, category=board.category)
+        addDB(p)
 
         for tag in board.tags:
             t = models.tag(tag=tag)

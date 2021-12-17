@@ -7,7 +7,6 @@ import pickle
 BASE_URL = "https://github.com"
 
 from dataclasses import dataclass, field
-from datetime import date
 from typing import List
 
 
@@ -66,8 +65,9 @@ def get_table(url, boards):
 def dfs(node, boards):
     if len(node.children) == 0:
         tag = get_table(node.data, boards)
+        category = node.data.split('/')[-2]
         print(tag)
-        boards.append(Board(name=node.data, category="", tags=tag))
+        boards.append(Board(name=node.data, category=category, tags=tag))
     for i in node.children:
         dfs(i, boards)
 
