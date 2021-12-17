@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from typing import List
 import models
 from domain.crawler import get_info, Board
 
@@ -24,36 +24,29 @@ def get_paper_tags(db: Session):
 
 
 def refresh_data(db: Session):
-    boards = get_info(dummy_data=True)
-    for i in boards:
-        name = i.name
+    boards: List[Board] = get_info(dummy_data=True)
 
-        p = models.paper(title=name, url=name, category="c")
+    def addDB(data, except_func=None, *except_args):
         try:
-            db.add(p)
+            db.add(data)
             db.commit()
         except:
             db.rollback()
-            print("paper 추가 에러 발생")
+            data = except_func(except_args)
 
-        tags = i.tags
-        for tag in tags:
+        return data
+
+    for board in boards:
+        name = board.name
+        p = models.paper(title=name, url=name, category="c")
+        addDB(p, lambda: print("paper 추가 에러 발생"))
+
+        for tag in board.tags:
             t = models.tag(tag=tag)
-            try:
-                db.add(t)
-                db.commit()
-            except:
-                db.rollback()
-                t = db.query(models.tag).filter(models.tag.tag == t.tag).first()
-                print("중복 태그")
+            t = addDB(t, lambda args: db.query(models.tag).filter(models.tag.tag == args[0]).first(), t.tag)
 
             f_p = models.fast_paper(paper_id=p.id, tag_id=t.id)
-            try:
-                db.add(f_p)
-                db.commit()
-            except:
-                db.rollback()
-                print("paper 추가 에러 발생")
+            addDB(f_p)
 
     return None
 
